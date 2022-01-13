@@ -76,6 +76,14 @@ except ImportError:
     import json
 
 
+try:
+    u_basestring = basestring
+    u_unicode = unicode
+except NameError:
+    # Pretty simple support for Python3
+    u_basestring = str
+    u_unicode = str
+
 class Juggernaut(object):
     """Connects to a Juggernaut.  By default it creates a new redis
     connection with default settings (localhost) but a different
@@ -95,7 +103,7 @@ class Juggernaut(object):
 
     def publish(self, channels, data, except_=None, **options):
         """Publishes some data to one channel or a list of channels."""
-        if isinstance(channels, basestring):
+        if isinstance(channels, u_basestring):
             channels = [channels]
         d = {'channels': list(set(channels)), 'data': data}
         if except_:
@@ -158,7 +166,7 @@ class Roster(object):
         """
         meta = data.get('meta')
         if meta:
-            return unicode(meta.get(self.user_meta_key))
+            return u_unicode(meta.get(self.user_meta_key))
 
     def on_signed_in(self, user_id):
         """Called if a user is signed in."""
